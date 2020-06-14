@@ -1,6 +1,13 @@
 #!/bin/bash
 
-URL=https://www.mcdonalds-eckstein.de/de/home
+URL=https://www.google.de
+
+# chromium update-msg fuer ein jahr nach hinten schieben
+#sudo touch /etc/chromium-browser/customizations/01-disable-update-check;
+#sudo echo CHROMIUM_FLAGS="${CHROMIUM_FLAGS} --check-for-update-interval=31536000" > /etc/chromium-browser/customizations/01-disable-update-check
+
+#Kein Profile-Lock wenn der Hostname geaendert wird
+rm -rf ~/.config/chromium/Singleton*
 
 while true; do
 	wget $URL --spider --retry-connrefused --waitretry=1 --read-timeout=10 --timeout=5 -t 3 >/dev/null 2>&1
@@ -11,7 +18,8 @@ while true; do
 		if [ $? -ne 0 ]
 		then
 			echo starting Chromium
-			chromium --kiosk $URL &
+			chromium --no-default-browser-check --check-for-update-interval=604800 --disable-pinch --incognito --kiosk $URL &
+			#--no-default-browser-check --check-for-update-interval=604800 --disable-pinch --incognito --kiosk
 		else
 			echo Chromium already running
 		fi
